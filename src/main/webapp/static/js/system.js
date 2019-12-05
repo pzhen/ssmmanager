@@ -1,3 +1,19 @@
+$.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [ o[this.name] ];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+}
+
 layui.use(['form', 'laydate', 'layer'], function () {
     var form = layui.form;
     var layer = layui.layer;
@@ -166,9 +182,10 @@ function modifyStatusByBatch(url, status) {
 function formSubmit(url, data, display,jumpType) {
     $.ajax({
         url: url,
-        data: data,
+        data: JSON.stringify(data),
         type: "post",
-        dataType: "json",
+        //dataType: "text",
+        contentType:"application/json",
         success: function (data) {
             var messge = "网络繁忙...";
             if (data.message) {
@@ -189,7 +206,7 @@ function formSubmit(url, data, display,jumpType) {
                     }
                 });
             } else {
-                layer.alert(messge, {icon: 6, time: 5000}, function () {
+                layer.alert(messge, {icon: 6, time: 3000}, function () {
                     if(data.code > 0){
                         if(jumpType == "reload"){
                             closeCurrentIframe()

@@ -13,8 +13,8 @@
         <result property="userLastip" column="user_lastip"></result>
         <result property="userType" column="user_type"></result>
         <result property="userStatus" column="user_status"></result>
-        <result property="createTime" column="create_time"></result>
-        <result property="updateTime" column="update_time"></result>
+        <result property="createTime" column="create_time" javaType="long" jdbcType="INTEGER"></result>
+        <result property="updateTime" column="update_time" javaType="long" jdbcType="INTEGER"></result>
     </resultMap>
 
     <select id="getRowByID" parameterType="int" resultMap="userResultMap">
@@ -49,8 +49,6 @@
             username,
             password,
             user_roles,
-            user_photo,
-            user_lastip,
             user_type,
             user_status,
             create_time,
@@ -60,8 +58,6 @@
           #{username},
           #{password},
           #{userRoles},
-          #{userPhoto},
-          #{userLastip},
           #{userType},
           #{userStatus},
           #{createTime},
@@ -69,17 +65,38 @@
         )
     </insert>
 
-    <update id="update" parameterType="user" >
+    <update id="update" parameterType="user">
         UPDATE sys_user SET
-        username = #{username},
-        password = #{password},
-        user_roles = #{userRoles},
-        user_photo = #{userPhoto},
-        user_lastip = #{userLastip},
-        user_type = #{userType},
-        user_status = #{userStatus},
-        create_time = #{createTime},
+        <if test="username != null and username != ''">
+            username = #{username},
+        </if>
+
+        <if test="password != null and password != ''">
+            password = #{password},
+        </if>
+
+        <if test="userRoles != null and userRoles != ''">
+            user_roles = #{userRoles},
+        </if>
+
+        <if test="userPhoto != null and userPhoto != ''">
+            user_photo = #{userPhoto},
+        </if>
+
+        <if test="userLastip != null and userLastip != ''">
+            user_lastip = #{userLastip},
+        </if>
+
+        <if test="userType > 0">
+            user_type = #{userType},
+        </if>
+
+        <if test="userStatus > 0">
+            user_status = #{userStatus},
+        </if>
+
         update_time = #{updateTime}
+
         WHERE user_id = #{userId}
     </update>
 </mapper>

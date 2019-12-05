@@ -104,7 +104,7 @@
             });
             str = str.substring(0,str.length-1)
             $("#roleId").val(str)
-            formSubmit('${pageContext.request.contextPath}/sys/user/save.do', $("#form-data").serialize(),"alert","reload")
+            formSubmit('${pageContext.request.contextPath}/sys/user/save.do', $("#form-data").serializeObject(),"alert","reload")
             layer.close(loading);
             return false
         })

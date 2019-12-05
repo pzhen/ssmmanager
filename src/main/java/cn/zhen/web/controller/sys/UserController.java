@@ -35,8 +35,8 @@ public class UserController extends BaseController {
 
     @RequestMapping("login")
     public @ResponseBody
-    Message login(Model m, String username, String password) {
-        User user = userService.doLogin(username, password);
+    Message login(Model m, @RequestBody User u) {
+        User user = userService.doLogin(u.getUsername(), u.getPassword());
         if (user == null) {
             return new Message(0, "用户不存在或密码错误");
         } else {
@@ -66,7 +66,6 @@ public class UserController extends BaseController {
     public void list(Model model, String username, String pageNum) {
         Page pageList = userService.getListByPage(username, pageNum);
         List<Role> roleList = roleService.getListByAll();
-        System.out.println(roleList);
         model.addAttribute("username", username);
         model.addAttribute("pageList", pageList);
         model.addAttribute("roleList", roleList);
@@ -84,11 +83,7 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping("save")
-    public @ResponseBody Message save(User user){
-        int id = userService.save(user);
-        if (id>0) {
-            return new Message(1, "操作成功...", "/sys/user/list.do");
-        }
-        return new Message(1, "操作失败...");
+    public @ResponseBody Message save(@RequestBody User user){
+        return userService.save(user);
     }
 }

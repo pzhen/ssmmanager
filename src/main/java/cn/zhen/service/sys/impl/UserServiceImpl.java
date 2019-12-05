@@ -2,6 +2,7 @@ package cn.zhen.service.sys.impl;
 
 import cn.zhen.mapper.sys.MenuMapper;
 import cn.zhen.mapper.sys.UserMapper;
+import cn.zhen.model.Message;
 import cn.zhen.model.Page;
 import cn.zhen.model.sys.Menu;
 import cn.zhen.model.sys.User;
@@ -100,12 +101,33 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public int save(User user){
-        if (user.getUserId() > 0) {
-            user.setUpdateTime(System.currentTimeMillis()/1000);
-            return userMapper.update(user);
-        } else {
-            return userMapper.insert(user);
+    public Message save(User user) {
+        if (StringUtils.isEmpty(user.getUsername())) {
+            return new Message(0, "名字不能为空");
         }
+
+        if (StringUtils.isEmpty(user.getPassword())) {
+            return new Message(0, "密码不能为空");
+        }
+
+        if (StringUtils.isEmpty(user.getUserRoles())) {
+            return new Message(0, "角色不能为空");
+        }
+
+        Long time = System.currentTimeMillis() / 1000;
+        user.setUpdateTime(time);
+
+        if (user.getUserId() > 0) {
+            if (userMapper.update(user) > 0) {
+                return new Message(1, "保存成功", "/sys/user/list.do");
+            }
+        } else {
+            user.setCreateTime(time);
+            if (userMapper.insert(user) > 0) {
+                return new Message(1, "保存成功", "/sys/user/list.do");
+            }
+        }
+
+        return new Message(0, "保存失败");
     }
 }

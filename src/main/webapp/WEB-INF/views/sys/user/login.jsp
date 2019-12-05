@@ -30,6 +30,7 @@
 </div>
 
 <script>
+
     $(function () {
         layui.use('form', function () {
             var form = layui.form
@@ -37,7 +38,7 @@
 
             form.on('submit(sub)', function (data) {
                 var loading = layer.load(1, {shade: [0.1, '#fff']});
-                formSubmit('${pageContext.request.contextPath}/sys/user/login.do', $("#form-data").serialize(), "msg", "href")
+                formSubmit('${pageContext.request.contextPath}/sys/user/login.do', $("#form-data").serializeObject(), "msg", "href")
                 layer.close(loading);
                 return false
             })

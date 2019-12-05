@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zhen.mapper.sys.MenuMapper">
+
+    <resultMap id="menuResultMap" type="menu">
+        <id     property="menuID" column="menu_id"></id>
+        <result property="menuPID" column="menu_pid"></result>
+        <result property="menuName" column="menu_name"></result>
+        <result property="menuUrl" column="menu_url"></result>
+        <result property="menuIcon" column="menu_icon"></result>
+        <result property="menuShow" column="menu_show"></result>
+        <result property="menuStatus" column="menu_status"></result>
+        <result property="menuLevel" column="menu_level"></result>
+        <result property="menuPath" column="menu_path"></result>
+    </resultMap>
+
+
+    <select id="getRowByID" parameterType="int" resultMap="menuResultMap">
+        SELECT * FROM sys_menu WHERE menu_id = #{id}
+    </select>
+
+    <select id="getRowByUri" parameterType="String" resultMap="menuResultMap">
+        SELECT * FROM sys_menu WHERE menu_url = #{uri}
+    </select>
+
+    <select id="getListByIDArr" parameterType="list" resultMap="menuResultMap">
+        SELECT * FROM sys_menu
+        <where>
+            <if test="list != null and list.size > 0">
+                <foreach collection="list" item="id" open="menu_id in(" close=") " separator=",">
+                    ${id}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY menu_path ASC
+
+    </select>
+
+</mapper>

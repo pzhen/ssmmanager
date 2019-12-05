@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+    <!-- 扫描该包包括其子包 -->
+    <context:component-scan base-package="cn.zhen"/>
+
+    <!-- 数据库配置信息 -->
+    <context:property-placeholder location="classpath:db.properties" />
+
+    <!-- 主库 -->
+    <bean id="DBmaster" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${master.driverClassName}"></property>
+        <property name="url" value="${master.url}" />
+        <property name="username" value="${master.username}" />
+        <property name="password" value="${master.password}" />
+        <property name="initialSize" value="${master.initialSize}" />
+        <property name="maxActive" value="${master.maxActive}" />
+        <property name="maxWait" value="${master.maxWait}" />
+    </bean>
+
+    <!-- 从库1 -->
+    <bean id="DBslave1" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${slave1.driverClassName}"></property>
+        <property name="url" value="${slave1.url}" />
+        <property name="username" value="${slave1.username}" />
+        <property name="password" value="${slave1.password}" />
+        <property name="initialSize" value="${slave1.initialSize}" />
+        <property name="maxActive" value="${slave1.maxActive}" />
+        <property name="maxWait" value="${slave1.maxWait}" />
+    </bean>
+
+    <!-- 从库2 -->
+    <bean id="DBslave2" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${slave2.driverClassName}"></property>
+        <property name="url" value="${slave2.url}" />
+        <property name="username" value="${slave2.username}" />
+        <property name="password" value="${slave2.password}" />
+        <property name="initialSize" value="${slave2.initialSize}" />
+        <property name="maxActive" value="${slave2.maxActive}" />
+        <property name="maxWait" value="${slave2.maxWait}" />
+    </bean>
+
+    <bean id="dataSource" class="cn.zhen.utiles.DynamicDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry value-ref="DBmaster" key="master"></entry>
+                <entry value-ref="DBslave1" key="slave1"></entry>
+                <entry value-ref="DBslave2" key="slave2"></entry>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="DBmaster"></property>
+    </bean>
+
+    <!-- 配置sessionFactory -->
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="cn.zhen.model"></property>
+        <property name="mapperLocations" value="classpath:cn.zhen.mapper.sys.*Mapper.xml"/>
+    </bean>
+
+    <!-- 自动生成mapper bean -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.zhen.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"/>
+        <property name="annotationClass" value="org.springframework.stereotype.Repository" />
+    </bean>
+
+    <!-- 消息转换器  -->
+    <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" >
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" >
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 日志 AOP -->
+    <bean id="log4jAop" class="cn.zhen.aspect.Log4jAop" />
+
+    <!-- 数据源切换 AOP -->
+    <bean id="multipleDataSourceAop" class="cn.zhen.aspect.MultipleDataSourceAop" />
+
+    <aop:config proxy-target-class="true">
+        <aop:aspect ref="log4jAop" order="1">
+            <aop:pointcut id="pointcut" expression="execution(* cn.zhen.service.sys.impl.*.*(..))"/>
+            <aop:around method="around" pointcut-ref="pointcut"/>
+        </aop:aspect>
+
+        <aop:aspect ref="multipleDataSourceAop" order="0">
+            <aop:pointcut id="pointcut" expression="execution(* cn.zhen.service.sys.impl.*.*(..))"/>
+            <aop:before method="before" pointcut-ref="pointcut" />
+            <aop:after-returning method="afterReturning" pointcut-ref="pointcut"/>
+        </aop:aspect>
+    </aop:config>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 开启事务注解-->
+    <tx:annotation-driven proxy-target-class="true"></tx:annotation-driven>
+
+    <!-- spring mvc 开启注解驱动 -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+</beans>

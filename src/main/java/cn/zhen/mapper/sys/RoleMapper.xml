@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zhen.mapper.sys.RoleMapper">
+
+    <resultMap id="roleResultMap" type="role">
+        <id     property="roleID" column="role_id"></id>
+        <result property="roleName" column="role_name"></result>
+        <result property="roleMenus" column="role_menus"></result>
+        <result property="roleIntro" column="role_intro"></result>
+    </resultMap>
+
+
+
+    <select id="getRowByID" parameterType="int" resultMap="roleResultMap">
+        SELECT * FROM sys_role WHERE role_id = #{id}
+    </select>
+
+    <select id="getListByIDArr" parameterType="list" resultMap="roleResultMap">
+        SELECT * FROM sys_role
+        <where>
+            <if test="list != null and list.size > 0">
+                <foreach collection="list" item="id" open="role_id in(" close=")" separator=",">
+                    ${id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getListByAll" resultMap="roleResultMap" >
+        SELECT * FROM sys_role
+    </select>
+
+</mapper>

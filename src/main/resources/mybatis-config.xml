@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 便于本地用来Junit测试用,项目中已经做了 spring+mybatis 集成 -->
+
+    <properties resource="db.properties"/>
+
+    <settings>
+        <!--配置允许懒加载-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+
+        <!--允许开启二级缓存-->
+        <setting name="cacheEnabled" value="false"/>
+    </settings>
+    <!--配置别名 可以多个包-->
+    <typeAliases>
+        <package name="cn.zhen.model"></package>
+    </typeAliases>
+
+    <!-- 配置mybatis的环境信息 -->
+    <environments default="development">
+        <environment id="development">
+            <!-- 配置JDBC事务控制，由mybatis进行管理 -->
+            <transactionManager type="JDBC"></transactionManager>
+            <!-- 配置数据源，采用dbcp连接池 -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${master.driverClassName}"/>
+                <property name="url" value="${master.url}"/>
+                <property name="username" value="${master.username}"/>
+                <property name="password" value="${master.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--告诉mybatis加载映射文件-->
+    <mappers>
+        <!--<mapper resource="cn/zhen/mapper/sys/UserMapper.xml"></mapper>-->
+
+        <!--第一种:写映射文件的名字-->
+        <!--<mapper resource="cn/zhen/mapper/sys/UserMapper.xml"></mapper>-->
+
+        <!--第二种:写类名,一定要有个映射文件与之对应
+        如果没有，那么在UserMapper要声明注解-->
+        <!--<mapper class="cn.zhen.mapper.sys.UserMapper"></mapper>-->
+
+        <!--第三种：可以写包名-->
+        <package name="cn.zhen.mapper"></package>
+    </mappers>
+</configuration>

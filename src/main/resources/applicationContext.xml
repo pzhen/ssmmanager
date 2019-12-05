@@ -66,6 +66,7 @@
     <!-- 配置sessionFactory -->
     <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
+        <!--<property name="configLocation" value="classpath:mybatis.xml" />-->
         <property name="typeAliasesPackage" value="cn.zhen.model"></property>
         <property name="mapperLocations" value="classpath:cn.zhen.mapper.sys.*Mapper.xml"/>
     </bean>

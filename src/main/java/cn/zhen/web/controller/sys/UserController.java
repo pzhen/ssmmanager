@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -62,7 +61,6 @@ public class UserController extends BaseController {
     @RequestMapping("home")
     public void home() {
     }
-
 
     @RequestMapping("list")
     public void list(Model model, String username, String pageNum) {

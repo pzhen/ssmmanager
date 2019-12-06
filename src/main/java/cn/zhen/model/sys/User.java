@@ -1,6 +1,8 @@
 package cn.zhen.model.sys;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private int userId;
     private String username;
     private String password;

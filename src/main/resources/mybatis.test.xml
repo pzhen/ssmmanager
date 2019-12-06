@@ -35,7 +35,6 @@
         </environment>
     </environments>
 
-    <!--告诉mybatis加载映射文件-->
     <mappers>
         <!--<mapper resource="cn/zhen/mapper/sys/UserMapper.xml"></mapper>-->
 

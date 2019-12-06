@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.TreeSet;
@@ -29,12 +28,10 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
     private MenuMapper menuMapper;
 
     @Autowired
-    private RoleServiceImpl roleService;
-
-    @Autowired
     private MenuServiceImpl menuService;
 
     @DataSource(DataSource.slave)
+    @Override
     public Message doLogin(User u) {
         if (u == null || StringUtils.isEmpty(u.getUsername()) ||
                 StringUtils.isEmpty(u.getPassword())) {
@@ -85,6 +82,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
         return flag;
     }
 
+    @Override
     public Page getListByPage(String name, String pageNum) {
         int currPage = StringUtils.isEmpty(pageNum) ? 1 : Math.abs(Integer.parseInt(pageNum));
         Page<User> page = new Page<>();
@@ -101,6 +99,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
         return page;
     }
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Message save(User user) {
         if (StringUtils.isEmpty(user.getUsername())) {

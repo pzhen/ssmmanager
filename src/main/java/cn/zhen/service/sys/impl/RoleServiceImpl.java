@@ -22,6 +22,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements IRoleServi
         return null;
     }
 
+    @Override
     public List<Role> getListByIds(String ids) {
         if (ids == null || ids.equals("")) {
             return null;
@@ -30,6 +31,7 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements IRoleServi
         return roleMapper.getListByIDArr(Arrays.asList(idList));
     }
 
+    @Override
     public List<Role> getListByAll() {
         return roleMapper.getListByAll();
     }

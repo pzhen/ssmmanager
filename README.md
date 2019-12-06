@@ -34,13 +34,3 @@
 ## 演示
 
 > 导入数据库,账号/密码 abc123/123456
-
-## 效果图如下:
-
-![Image 1](https://github.com/pzhen/jbctrl/blob/master/src/main/resources/jbctrl01.png)
-
-![Image 2](https://github.com/pzhen/jbctrl/blob/master/src/main/resources/jbctrl02.png)
-
-![Image 3](https://github.com/pzhen/jbctrl/blob/master/src/main/resources/jbctrl03.png)
-
-

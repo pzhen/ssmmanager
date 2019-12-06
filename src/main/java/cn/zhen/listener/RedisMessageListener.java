@@ -21,18 +21,21 @@ public class RedisMessageListener implements MessageListener {
         // 获取消息
         byte[] body = message.getBody();
 
-        // 使用值序列化器转换
-        String msgBody = (String) getRedisTemplate().getValueSerializer().deserialize(body);
-        System.out.println("msgBody:" + msgBody);
-
         // 获取channel
         byte[] channel = message.getChannel();
+
         // 使用字符串序列化器转换
         String channelStr = (String) getRedisTemplate().getStringSerializer().deserialize(channel);
         System.out.println("channelStr:" + channelStr);
 
-        // 渠道名称转换
-        //String bytesStr = new String(bytes);
-        //System.err.println(bytesStr);
+        if (channelStr.equals("__keyevent@0__:expired")) {
+            String expireKey = new String(body);
+            System.out.println("过期消息Key: " + expireKey);
+        }
+
+        if (channelStr.equals("chat")) {
+            String msgBody = (String) getRedisTemplate().getValueSerializer().deserialize(body);
+            System.out.println("订阅消息:"+msgBody);
+        }
     }
 }

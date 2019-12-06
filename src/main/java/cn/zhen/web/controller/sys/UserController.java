@@ -36,13 +36,9 @@ public class UserController extends BaseController {
     @RequestMapping("login")
     public @ResponseBody
     Message login(Model m, @RequestBody User u) {
-        User user = userService.doLogin(u.getUsername(), u.getPassword());
-        if (user == null) {
-            return new Message(0, "用户不存在或密码错误");
-        } else {
-            m.addAttribute("user", user);
-            return new Message(1, "登录成功...", "/sys/user/frame.do");
-        }
+        Message msg = userService.doLogin(u);
+        m.addAttribute("user", msg.getData());
+        return msg;
     }
 
     @RequestMapping("logout")

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.TreeSet;
@@ -34,27 +35,27 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
     private MenuServiceImpl menuService;
 
     @DataSource(DataSource.slave)
-    public User doLogin(String username, String password) {
-        if (StringUtils.isEmpty(username)) {
-            return null;
+    public Message doLogin(User u) {
+        if (u == null || StringUtils.isEmpty(u.getUsername()) ||
+                StringUtils.isEmpty(u.getPassword())) {
+            return new Message(0, "请填写用户名密码");
         }
 
-        User user = userMapper.getRowByName(username);
+        User user = userMapper.getRowByName(u.getUsername());
 
         if (user == null) {
-            return null;
+            return new Message(0, "用户不存在或密码错误");
         }
 
-        if (password.equals(user.getPassword())) {
-            return user;
-        } else {
-            return null;
+        if (u.getPassword().equals(user.getPassword())) {
+            return new Message(1, "登录成功...", "/sys/user/frame.do", user);
         }
+        return new Message(0, "用户不存在或密码错误");
     }
+
 
     @Override
     public User getRowByID(Integer ID) {
-
         return userMapper.getRowByID(ID);
     }
 

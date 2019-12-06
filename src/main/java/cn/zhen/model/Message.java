@@ -4,6 +4,7 @@ public class Message {
     private Integer code;
     private String message;
     private String url;
+    private Object data;
 
     public Message() {
     }
@@ -17,6 +18,21 @@ public class Message {
         this.code = code;
         this.message = message;
         this.url = url;
+    }
+
+    public Message(Integer code, String message, String url, Object data) {
+        this.code = code;
+        this.message = message;
+        this.url = url;
+        this.data = data;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
     }
 
     public Integer getCode() {

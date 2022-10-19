@@ -36,7 +36,7 @@
     <commons-dbcp2.version>2.1.1</commons-dbcp2.version>
     <spring-data-redis.version>1.7.2.RELEASE</spring-data-redis.version>
     <jedis.version>2.9.0</jedis.version>
-    <jackson-databind.version>2.9.8</jackson-databind.version>
+    <jackson-databind.version>2.13.4.1</jackson-databind.version>
     <jackson-annotations.version>2.9.5</jackson-annotations.version>
     <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
     <javax.servlet.jsp-api.version>2.3.1</javax.servlet.jsp-api.version>
